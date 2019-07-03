@@ -20,35 +20,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class CounterStorage {
-  Future<String> get _localPath async {
-    final directory = await getTemporaryDirectory();
-
-    return directory.path;
-  }
-
-  Future<File> get _localFile async {
-    final path = await _localPath;
-    return File('$path/counter.txt');
-  }
-
-  Future<String> readCounter() async {
-    try {
-      final file = await _localFile;
-      String contents = await file.readAsString();
-
-      return contents;
-    } catch (e) {
-      return "";
-    }
-  }
-
-  Future<File> writeCounter(String text) async {
-    final file = await _localFile;
-    return file.writeAsString('$text');
-  }
-}
-
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title, this.storage}) : super(key: key);
 
@@ -62,7 +33,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   TextEditingController _controller = TextEditingController();
 
-  void _incrementCounter() async {
+  void sendEmail() async {
     widget.storage.writeCounter(_controller.text);
     final path = await widget.storage._localPath;
 
@@ -112,10 +83,39 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: _incrementCounter,
+        onPressed: sendEmail,
         icon: Icon(Icons.error_outline),
         label: Text('Send log'),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+}
+
+class CounterStorage {
+  Future<String> get _localPath async {
+    final directory = await getTemporaryDirectory();
+
+    return directory.path;
+  }
+
+  Future<File> get _localFile async {
+    final path = await _localPath;
+    return File('$path/counter.txt');
+  }
+
+  Future<String> readCounter() async {
+    try {
+      final file = await _localFile;
+      String contents = await file.readAsString();
+
+      return contents;
+    } catch (e) {
+      return "";
+    }
+  }
+
+  Future<File> writeCounter(String text) async {
+    final file = await _localFile;
+    return file.writeAsString('$text');
   }
 }
